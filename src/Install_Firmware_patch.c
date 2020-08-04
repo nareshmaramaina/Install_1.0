@@ -1,44 +1,43 @@
 #include<header.h>
-char *Standard_Apps_path="/mnt/sysuser/Software-Upgrade/Applications_Downloads/";
 char *Standard_Firmwares_path="/mnt/sysuser/Software-Upgrade/Firmware_Downloads/";
 char *Firmware_history_file="/etc/vision/RHMS/Firmware/Installed_patches_history";
 int Install_Firmware_patch(char *FirmwarePatchFile)
 {
-	char Date_time[64];
-	char file[128];
+	char file[360];
 	char cmd[400];
-	FILE *fp=NULL;
+	char md5sum[64];
 	int ret =0;
 	char ExtractPath[330];
 	char FirmwarePath[340];
 	char RemoveExtractPath[340];
-	//	char FirmwarePatchFile[128];
-	char FirmwareType[128];
-	char Filename[128];
+	char FirmwareName[128];
 	float Version;
 	DIR *dp=NULL;
 
-	memset(FirmwareType,0,sizeof(FirmwareType));
-	memset(Filename,0,sizeof(Filename));
+	memset(FirmwareName,0,sizeof(FirmwareName));
+	ret = Get_Tokens_of_FirmwarePatchfile(FirmwarePatchFile,FirmwareName,&Version);
 
-	ret = Get_Tokens_of_FirmwarePatchfile(FirmwarePatchFile,FirmwareType,Filename,&Version);
-
-	if( ret  == 0 )
-		printf(" FirmwarType = %s Filename = %s Version= %.1f\n" ,FirmwareType,Filename,Version);
-
-
-	memset(ExtractPath,0,sizeof(ExtractPath));
-
-	sprintf(ExtractPath,"%s/%s/Extract",Standard_Firmwares_path,FirmwareType);
-	sprintf(RemoveExtractPath,"rm -rf %s",ExtractPath);	
+	printf(" FirmwareName = %s  Version= %.1f\n" ,FirmwareName,Version);
+	if( ret  != 0 )
+		return -1;
 
 	if ( access(FirmwarePatchFile,F_OK) != 0 )
 	{
 		fprintf(stderr,"%s file not found\n",FirmwarePatchFile);
-		//Delete_From_installation(FirmwarePatchFile,FIRMWARE);
 		return -1;
 	}
 
+	fprintf(stdout,"Firmware Installing ...\n");
+	memset(ExtractPath,0,sizeof(ExtractPath));
+
+	sprintf(ExtractPath,"%s/%s/Extract",Standard_Firmwares_path,FirmwareName);
+	sprintf(RemoveExtractPath,"rm -rf %s",ExtractPath);	
+
+
+
+	system("/vision/lcd_bkl &");
+
+	system("cat /vision/apply_patch > /dev/fb0");
 
 	if( access(ExtractPath,F_OK) == 0 )
 		system (RemoveExtractPath); // Removing previous files  
@@ -47,16 +46,17 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	sprintf(cmd,"mkdir -p %s",ExtractPath);
 	system(cmd); // Extract Patch in Particular Folder 
 
-	memset(cmd,0,sizeof(cmd));
+	system("mkdir -p /etc/vision/RHMS/Firmware/");
 
 	sprintf(cmd,"unzip %s -d %s  >> %s",FirmwarePatchFile,ExtractPath,Firmware_history_file);
 
 	printf("Extracting %s\n",cmd);  
 
 	ret = system(cmd); // Unzipping 
-
+	
 	if(ret != 0)
 	{
+		system (RemoveExtractPath); // Removing previous files  
 		fprintf(stderr,"Unzip failed %s\n",FirmwarePatchFile);	
 		return -1;
 	}
@@ -68,6 +68,8 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		fprintf(stderr,"patch.md5 Checksum failed %s\n",FirmwarePatchFile);
 		return -1;
 	}
+	memset(md5sum,0,sizeof(md5sum));	
+	get_md5sum("patch.md5",md5sum);
 
 	memset(cmd,0,sizeof(cmd));
 	sprintf(cmd,"tar -xvf patch.tar.bz2 >> %s",Firmware_history_file);
@@ -91,12 +93,43 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	{
 		fprintf(stdout,"%s directory not found ",FirmwarePath);
 		return -1;
-	}		
+	}	
+	else closedir(dp);	
+
+
+	memset(file,0,sizeof(file));
+	sprintf(file,"%s/tmp/NonCritical",FirmwarePath);
+
+	ret = access(file,F_OK);
+	if ( ret != 0 )
+	{
+		ret = Check_Battery_and_Minumum_Charge();
+
+		if ( ret != 0 )
+			return 1;
+	}
+	else
+		fprintf(stdout,"Non Critical Mode Enabled\n");
+
 	memset(cmd,0,sizeof(cmd));
 	sprintf(cmd,"chmod -R 777  %s/*",FirmwarePath);
 	ret = system(cmd);
 	if ( ret == 0 )
 		fprintf(stdout,"Giving chmod -R 777 File Permission by default \n");
+
+
+	memset(file,0,sizeof(file));
+	sprintf(file,"%s/boot_files/",FirmwarePath);
+	dp = opendir(file);
+	if ( dp != NULL )
+	{
+		closedir(dp);
+		fprintf(stdout,"%s Boot Directory found, Searching for Boot Images",file);
+		Update_BootImages(file);
+		memset(cmd,0,sizeof(cmd));
+		sprintf(cmd,"rm -rf %s",file);
+		system(cmd);
+	}
 
 
 	memset(file,0,sizeof(file));
@@ -108,6 +141,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		sprintf(cmd,"sh %s",file);
 		ret =  system(cmd);
 		fprintf(stdout, "Finished run %s script for run commands Before Applying Firmware patch work,return value of script %d",file,ret );
+		sync();
 	}
 
 	fprintf(stdout,"Copying Download files into / directory\n");
@@ -131,24 +165,11 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		sprintf(cmd,"sh %s",file);
 		ret =  system(cmd);
 		fprintf(stdout, "Finished run %s script for run commands After Installed Firmware patch,return value of script %d",file,ret );
+		sync();
 	}
 
-
-	return ret;
+	Update_Firmware_patch_info_File(FirmwareName,Version,md5sum);
+	system (RemoveExtractPath); // Removing previous files  
+	return 0;
 
 }
-
-void Update_Current_Date_with_Time(char *Date_time)
-{
-	struct tm *Today=NULL;
-	struct timeval tv;
-
-	gettimeofday (&tv,NULL);
-
-	Today = localtime (&tv.tv_sec) ;
-
-	sprintf(Date_time,"Date:%02d/%02d/%04d Time:%02d-%02d-%02d",Today->tm_mday,Today->tm_mon+1,Today->tm_year+1900,Today->tm_hour,Today->tm_min,Today->tm_sec);
-
-	return;
-}
-

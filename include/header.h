@@ -1,3 +1,4 @@
+#include <sys/file.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -24,89 +25,36 @@
 #include <netinet/in.h> 
 #include <arpa/inet.h>
 #include <dirent.h>
-//#include <libxml/tree.h>
-//#include <libxml/parser.h>
 #include <dlfcn.h>
 
-/*struct Download_rhms
-{
-	char RTMServerIP[128];
-	char ApplicationImageName[64];
-	char ProjectName[64];
-	char PortNo[32];
-	char FTP_PATH_APP[2048];
-	char FTP_PATH_FIRMWARE[2048];
-	float ApplicationVersion;
-	float FirmWarePatchVersion;
-};*/
-//struct Download_rhms RHMS_Server;
-
-struct POS 
-{
-	float ApplicationVersion;
-	float FirmWarePatchVersion;
-}Device;
-
-struct Download
-{
-int Total_Updates_count;
-float Update_Version[100];
-}patch;
-#define RHMS_Response_file "/tmp/.response_file.xml"
-#define ACTIVE_MODE 1
-#define PASSIVE_MODE 2
+#define FIRMWARE 1
+#define APPLICATION 2
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int Download_Firmware_Updates(void);
-int Download_Application_Updates(void);
-int get_RHMS_response();
-void get_POS_Firmware_version();
-void get_POS_Application_version();
-int  Download_config(int); // 1 - Firmware type config Download
-int Download_patch(int); // 1 - Firmware type patch Download
-int Download_lock();
 int get_Machineid(char *machineid);
 int get_macid(char *macid);
-int wait_for_data(int sockfd,int timeout);
 int get_device_serialnumber(char *serialnum);  // Updating Device serial number in RHMS health structures
 int get_RHMS_Server_details(void);
 void Wait_for_internet(void);
 int Check_internet_by_hostname(char *host);
-int Parsing_ACK_from_Server(); 
-int wget_download (char *url,char *filename); // Mode= Active or Passive, retry_count =retry count to wget
-int get_updates_info(int Type);
- int Apply_Firmware_Patch(float patch_toUpdate );
- int Apply_Application_Patch(float patch_toUpdate );
-int Update_script();
-int Update_app();
-void get_time(char *date);
-int  get_version(float *version);
-void get_md5sum(char  *md5sum);
-int Update_App_release();
 int Check_Battery_and_Minumum_Charge(void); 
+int Install_Application_patch(char *ApplicationPatchFile);
+int Install_Firmware_patch(char *FirmwarePatchFile);
+int  Install_Firmware();
+int  Install_Apps();
+int Delete_From_installation(char *patch_file,int type);
+int Get_Tokens_of_FirmwarePatchfile(char *file,char *FirmwareName,float *Version);
+int Get_Total_Downloaded_Updates(int type);
+void Update_Current_Date_with_Time(char *Date_time);
+int Update_BootImages(char *BootImagesPath);
+int Get_Tokens_of_ApplicationPatchfile(char *file,char *ApplicationType,char *ApplicationName,float *Version);
+int Get_PatchFileName_for_installation(char *PatchFileName,int type,int Patch_Number);
+int Delete_patch(int Total_PatchCount,char *patch_file,int type);
+int Update_BootImages(char *BootImagesPath);
+void Update_Firmware_patch_info_File(char *FirmwareName,float Version,char *md5sum);
+void Update_Application_patch_info_File(char *app_patch_info_file,char *ApplicationType,char *ApplicationName,float Version,char *md5sum);
+void get_md5sum(char *file,char  *md5sum);
+void Update_Current_Date_with_Time(char *Date_time);
 

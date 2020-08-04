@@ -1,19 +1,18 @@
 #include<header.h>
 char *Install_Applications_file="/mnt/sysuser/Software-Upgrade/Applications_Downloads/Install_Applications.info";
 char *Install_Firmwares_file="/mnt/sysuser/Software-Upgrade/Firmware_Downloads/Install_Firmwares.info";
-char *Standard_Apps_path="/mnt/sysuser/Software-Upgrade/Applications_Downloads/";
-char *Standard_Firmwares_path="/mnt/sysuser/Software-Upgrade/Firmware_Downloads/";
-int main()
-{
-	Delete_From_installation("/mnt/sysuser/Software-Upgrade/Firmware_Downloads/testing/firmware-1.1.zip",1);
-	return 0;
-}
+extern char *Standard_Apps_path;
+extern char *Standard_Firmwares_path;
+/*int main()
+  {
+  Delete_From_installation("/mnt/sysuser/Software-Upgrade/Firmware_Downloads/testing/firmware-1.1.zip",1);
+  return 0;
+  }*/
 int Delete_From_installation(char *patch_file,int type)
 {
 	int Total_Count;
 	Total_Count = Get_Total_Downloaded_Updates(type);
-	Delete_patch(Total_Count,patch_file, type);
-	return 0;
+	return  Delete_patch(Total_Count,patch_file, type);
 }
 int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 {
@@ -43,18 +42,18 @@ int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 		fprintf(stdout,"Unknown type Requested\n");
 		return -1;
 	}
-	
+
 	if ( Total_PatchCount == 1 )
 	{
-	fprintf(stdout,"Deleted %s file, Because only one patch found\n",filename);
-	remove(filename);
-	return 0;
+		fprintf(stdout,"Deleted %s file, Because only one patch found\n",filename);
+		remove(filename);
+		return 0;
 	}
 	fp = fopen(filename,"r");
 	if ( fp == NULL )
 	{
 		fprintf(stdout," Open error = %s\n",filename);
-		return -1;
+		return -2;
 	}
 
 	while( (getline(&line, &len, fp) > 0) )
@@ -95,9 +94,10 @@ int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 		}
 
 	}
-	else fprintf(stdout,"Notttttt Found %s",patch_file);
+	else 
+		fprintf(stdout,"Notttttt Found %s",patch_file);
 
-	return -1;
+	return -3;
 }
 int Get_Total_Downloaded_Updates(int type)
 {
