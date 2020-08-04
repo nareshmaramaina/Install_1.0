@@ -13,7 +13,6 @@ Delete_From_installation	Delete_From_installation.c	/^int Delete_From_installati
 Delete_patch	Delete_From_installation.c	/^int Delete_patch(int Total_PatchCount,char *patch_file,int type)$/;"	f	typeref:typename:int
 Firmware_history_file	Install_Firmware_patch.c	/^char *Firmware_history_file="\/etc\/vision\/RHMS\/Firmware\/Installed_patches_history";$/;"	v	typeref:typename:char *
 Get_PatchFileName_for_installation	Get_PatchFileName_for_installation.c	/^int Get_PatchFileName_for_installation(char *PatchFileName,int type,int Patch_Number)$/;"	f	typeref:typename:int
-Get_Tokens_of_ApplicationPatchfile	App_version.c	/^int Get_Tokens_of_ApplicationPatchfile(char *file,char *ApplicationType,char *ApplicationName,fl/;"	f	typeref:typename:int
 Get_Tokens_of_ApplicationPatchfile	Get_Tokens_of_Patchfile.c	/^int Get_Tokens_of_ApplicationPatchfile(char *file,char *ApplicationType,char *ApplicationName,fl/;"	f	typeref:typename:int
 Get_Tokens_of_FirmwarePatchfile	Get_Tokens_of_Patchfile.c	/^int Get_Tokens_of_FirmwarePatchfile(char *file,char *FirmwareName,float *Version)$/;"	f	typeref:typename:int
 Get_Total_Downloaded_Updates	Delete_From_installation.c	/^int Get_Total_Downloaded_Updates(int type)$/;"	f	typeref:typename:int
@@ -25,21 +24,15 @@ Install_Firmware_patch	Install_Firmware_patch.c	/^int Install_Firmware_patch(cha
 Install_Firmwares_file	Delete_From_installation.c	/^char *Install_Firmwares_file="\/mnt\/sysuser\/Software-Upgrade\/Firmware_Downloads\/Install_Firm/;"	v	typeref:typename:char *
 Install_patches_lock	main.c	/^int Install_patches_lock()$/;"	f	typeref:typename:int
 Installer_FirmwareAndApps	makefile	/^Installer_FirmwareAndApps:main.c Install_Application_patch.c  Install_Apps.c  Install_Firmware.c/;"	t
-Standard_Apps_path	App_version.c	/^char *Standard_Apps_path="\/mnt\/sysuser\/Software-Upgrade\/Applications_Downloads\/";$/;"	v	typeref:typename:char *
 Standard_Apps_path	Install_Application_patch.c	/^char *Standard_Apps_path="\/mnt\/sysuser\/Software-Upgrade\/Applications_Downloads\/";$/;"	v	typeref:typename:char *
 Standard_Firmwares_path	Install_Firmware_patch.c	/^char *Standard_Firmwares_path="\/mnt\/sysuser\/Software-Upgrade\/Firmware_Downloads\/";$/;"	v	typeref:typename:char *
-Update_App_release	Update_Firmware.c	/^int Update_App_release()$/;"	f	typeref:typename:int
+Update_Application_patch_info_File	Update_patch_info_File.c	/^void Update_Application_patch_info_File(char *app_patch_info_file,char *ApplicationType,char *Ap/;"	f	typeref:typename:void
 Update_BootImages	Update_BootImages.c	/^int Update_BootImages(char *BootImagesPath)$/;"	f	typeref:typename:int
-Update_Current_Date_with_Time	update.c	/^void Update_Current_Date_with_Time(char *Date_time)$/;"	f	typeref:typename:void
-Update_app	Update_Firmware.c	/^int Update_app()$/;"	f	typeref:typename:int
+Update_Current_Date_with_Time	Update_patch_info_File.c	/^void Update_Current_Date_with_Time(char *Date_time)$/;"	f	typeref:typename:void
+Update_Firmware_patch_info_File	Update_patch_info_File.c	/^void Update_Firmware_patch_info_File(char *FirmwareName,float Version,char *md5sum)$/;"	f	typeref:typename:void
 bin_strip	makefile	/^bin_strip=arm-none-linux-gnueabi-strip$/;"	m
 clean	makefile	/^clean:$/;"	t
-date	update.c	/^	char date[48];$/;"	v	typeref:typename:char[48]
-fp	update.c	/^	FILE *fp=NULL;$/;"	v	typeref:typename:FILE *
-get_md5sum	Update_Firmware.c	/^void get_md5sum(char *file,char  *md5sum)$/;"	f	typeref:typename:void
-get_md5sum	update.c	/^void get_md5sum(char *file,char  *md5sum)$/;"	f	typeref:typename:void
+get_md5sum	Update_patch_info_File.c	/^void get_md5sum(char *file,char  *md5sum)$/;"	f	typeref:typename:void
 gl11_battery_status	Check_Battery_and_Minumum_Charge.c	/^int gl11_battery_status()$/;"	f	typeref:typename:int
 libs	makefile	/^libs=-L ..\/lib\/ -lgl11pos  -lpcsclite$/;"	m
-main	App_version.c	/^int main()$/;"	f	typeref:typename:int
 main	main.c	/^int main()$/;"	f	typeref:typename:int
-md5sum	update.c	/^	char md5sum[48];$/;"	v	typeref:typename:char[48]
