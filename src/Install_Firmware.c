@@ -1,5 +1,5 @@
 #include<header.h>
-
+extern char *Install_Firmwares_file;
 int  Install_Firmware()
 {
 	int ret;
@@ -17,8 +17,13 @@ int  Install_Firmware()
 	{	
 		ret =  Install_Firmware_patch(FirmwarePatchFile);
 		if ( ret != 1 )
+		{
+			if ( ret == -1 )
+			{
+				fprintf(stdout,"Firmware patch install Failed, Corruption Happened, So removing Firmware Installation file %s \n",Install_Firmwares_file);
+			}
 			Delete_From_installation(FirmwarePatchFile,FIRMWARE);
-
+		}
 	}
 	return ret;
 }

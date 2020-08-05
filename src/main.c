@@ -17,6 +17,7 @@ int Install_patches_lock()
 }
 int main()
 {
+	int Success_Installation=0;
 	int Apps_Downloads,Firmware_Downloads;
 	int ret;
 	ret = Install_patches_lock();
@@ -36,8 +37,7 @@ int main()
 		else if ( ret == 0 )
 		{
 			fprintf(stdout,"Successfully Installed Firmware Patch, reboot required for the patch changes\n");
-			system("reboot");
-			return 0;
+			Success_Installation=1;
 		}
 		else fprintf(stdout,"Firmware Installation Failed\n");
 	}
@@ -52,7 +52,7 @@ int main()
 		if ( ret > 0 )
 		{
 			fprintf(stdout,"Successfully Installed %d Applications, reboot required for the patch changes\n",ret);
-			system("reboot");
+			Success_Installation =1;
 		}
 	}
 	else 
@@ -63,6 +63,11 @@ int main()
 	{
 		fprintf(stdout,"\n***** No Software Updates Found *****\n");
 		return 0;
+	}
+	else if ( Success_Installation == 1 )
+	{
+		fprintf(stdout,"Rebooting the POS device  for the patch installation changes\n");
+		system("reboot");
 	}
 
 	return 0;

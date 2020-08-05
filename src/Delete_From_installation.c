@@ -45,14 +45,15 @@ int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 
 	if ( Total_PatchCount == 1 )
 	{
-		fprintf(stdout,"Deleted %s file, Because only one patch found\n",filename);
+		fprintf(stdout,"%s patch file Deleted and  Removing %s Installer file\n",patch_file,filename);
+		remove(patch_file);
 		remove(filename);
 		return 0;
 	}
 	fp = fopen(filename,"r");
 	if ( fp == NULL )
 	{
-		fprintf(stdout," Open error = %s\n",filename);
+		fprintf(stdout,"%s file not found \n",filename);
 		return -2;
 	}
 
@@ -90,7 +91,7 @@ int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 				fprintf(fp,"%s\n",patch[i]);
 			fclose(fp);
 			remove(patch_file);
-			fprintf(stdout,"Successfully Deleted From Installation and Delted patch %s \n",patch_file);
+			fprintf(stdout,"Successfully Deleted From Installation and  Delted patch %s \n",patch_file);
 		}
 
 	}
@@ -128,7 +129,7 @@ int Get_Total_Downloaded_Updates(int type)
 	fp = fopen(filename,"r");
 	if ( fp == NULL )
 	{
-		fprintf(stdout," Open error = %s\n",filename);
+		fprintf(stdout,"%s file not found\n",filename);
 		return -1;
 	}
 

@@ -117,21 +117,6 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	if ( ret == 0 )
 		fprintf(stdout,"Giving chmod -R 777 File Permission by default \n");
 
-
-	memset(file,0,sizeof(file));
-	sprintf(file,"%s/boot_files/",FirmwarePath);
-	dp = opendir(file);
-	if ( dp != NULL )
-	{
-		closedir(dp);
-		fprintf(stdout,"%s Boot Directory found, Searching for Boot Images",file);
-		Update_BootImages(file);
-		memset(cmd,0,sizeof(cmd));
-		sprintf(cmd,"rm -rf %s",file);
-		system(cmd);
-	}
-
-
 	memset(file,0,sizeof(file));
 	sprintf(file,"%s/tmp/start_fw.sh",FirmwarePath);
 	ret = access(file,F_OK);
@@ -140,9 +125,24 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		memset(cmd,0,sizeof(cmd));
 		sprintf(cmd,"sh %s",file);
 		ret =  system(cmd);
-		fprintf(stdout, "Finished run %s script for run commands Before Applying Firmware patch work,return value of script %d",file,ret );
+		fprintf(stdout, "Finished run %s script for run commands Before Applying Firmware patch work,return value of script = %d\n",file,ret );
 		sync();
 	}
+
+	memset(file,0,sizeof(file));
+	sprintf(file,"%s/boot_files/",FirmwarePath);
+	dp = opendir(file);
+	if ( dp != NULL )
+	{
+		closedir(dp);
+		fprintf(stdout,"%s Boot Directory found, Searching for Boot Images\n",file);
+		Update_BootImages(file);
+		memset(cmd,0,sizeof(cmd));
+		sprintf(cmd,"rm -rf %s",file);
+		system(cmd);
+	}
+
+
 
 	fprintf(stdout,"Copying Download files into / directory\n");
 	memset(cmd,0,sizeof(cmd));
@@ -164,7 +164,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		memset(cmd,0,sizeof(cmd));
 		sprintf(cmd,"sh %s",file);
 		ret =  system(cmd);
-		fprintf(stdout, "Finished run %s script for run commands After Installed Firmware patch,return value of script %d",file,ret );
+		fprintf(stdout, "Finished run %s script for run commands After Installed Firmware patch,return value of script = %d\n",file,ret );
 		sync();
 	}
 

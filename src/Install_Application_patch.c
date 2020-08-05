@@ -135,7 +135,7 @@ int Install_Application_patch(char *ApplicationPatchFile)
 		memset(cmd,0,sizeof(cmd));
 		sprintf(cmd,"sh %s",file);
 		ret =  system(cmd);
-		fprintf(stdout, "Finished run %s script for run commands Before Applying Application patch work,return value of script %d",file,ret );
+		fprintf(stdout, "Finished run %s script for run commands Before Applying Application patch work,return value of script = %d\n",file,ret );
 		sync();
 	}
 
@@ -159,7 +159,7 @@ int Install_Application_patch(char *ApplicationPatchFile)
 		memset(cmd,0,sizeof(cmd));
 		sprintf(cmd,"sh %s",file);
 		ret =  system(cmd);
-		fprintf(stdout, "Finished run %s script for run commands After Installed Application patch,return value of script %d",file,ret );
+		fprintf(stdout, "Finished run %s script for run commands After Installed Application patch,return value of script = %d\n",file,ret );
 		sync();
 	}
 	Update_Application_patch_info_File(Patch_info_file,ApplicationType,ApplicationName,Version,md5sum);
