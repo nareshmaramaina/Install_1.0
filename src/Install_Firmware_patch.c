@@ -1,6 +1,6 @@
 #include<header.h>
 char *Standard_Firmwares_path="/mnt/sysuser/Software-Upgrade/Firmware_Downloads/";
-char *Firmware_history_file="/etc/vision/RHMS/Firmware/Installed_patches_history";
+char *Firmware_history_file="/etc/vision/RHMS/Firmware/Installed_Firmware_patches_history";
 int Install_Firmware_patch(char *FirmwarePatchFile)
 {
 	char file[360];

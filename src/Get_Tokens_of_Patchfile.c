@@ -49,18 +49,18 @@ int Get_Tokens_of_FirmwarePatchfile(char *file,char *FirmwareName,float *Version
 
 
 /*int main()
-{
-	char ApplicationType[128];
-	char ApplicationName[128];
-	float Version;
-	memset(ApplicationType,0,sizeof(ApplicationType));
-	memset(ApplicationName,0,sizeof(ApplicationName));
-	char ApplicationPatchFile[128]="/mnt/sysuser/Software-Upgrade/Applications_Downloads/BANK/ICICI/app-1.3.zip";
+  {
+  char ApplicationType[128];
+  char ApplicationName[128];
+  float Version;
+  memset(ApplicationType,0,sizeof(ApplicationType));
+  memset(ApplicationName,0,sizeof(ApplicationName));
+  char ApplicationPatchFile[128]="/mnt/sysuser/Software-Upgrade/Applications_Downloads/BANK/ICICI/app-1.3.zip";
 
-	Get_Tokens_of_ApplicationPatchfile(ApplicationPatchFile,ApplicationType,ApplicationName,&Version);
-	printf(" FirmwarType = %s ApplicationName = %s Version= %.1f\n" ,ApplicationType,ApplicationName,Version);
+  Get_Tokens_of_ApplicationPatchfile(ApplicationPatchFile,ApplicationType,ApplicationName,&Version);
+  printf(" FirmwarType = %s ApplicationName = %s Version= %.1f\n" ,ApplicationType,ApplicationName,Version);
 
-} */
+  } */
 
 //int Get_Token_of_ApplicationPatchfile(char *ApplicationPatchFile)
 int Get_Tokens_of_ApplicationPatchfile(char *file,char *ApplicationType,char *ApplicationName,float *Version)
