@@ -12,7 +12,14 @@ int Delete_From_installation(char *patch_file,int type)
 {
 	int Total_Count;
 	Total_Count = Get_Total_Downloaded_Updates(type);
-	return  Delete_patch(Total_Count,patch_file, type);
+	if ( Total_Count <= 0 )
+	{
+		fprintf(stdout,"Installation Total_Count %d, type = %d\n",Total_Count,type);
+		return -1;	
+	}
+	else
+		return Delete_patch(Total_Count,patch_file, type);
+
 }
 int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 {

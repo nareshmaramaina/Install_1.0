@@ -21,7 +21,8 @@ int  Install_Firmware()
 			if ( ret == -1 )
 			{
 				fprintf(stdout,"Firmware patch install Failed, Corruption Happened, So removing Firmware Installation file %s \n",Install_Firmwares_file);
-			remove(Install_Firmwares_file);
+				remove(Install_Firmwares_file);
+				return -1;
 			}
 			Delete_From_installation(FirmwarePatchFile,FIRMWARE);
 		}
