@@ -27,7 +27,7 @@ int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 	FILE *fp=NULL;
 	char filename[128];
 	char *line=NULL;
-	size_t len=0;
+	size_t len=0,sizeofBuffer=0;
 	int Found=0,PatchCount=0,i;
 	char path[128];
 	memset(filename,0,sizeof(memset));
@@ -76,7 +76,18 @@ int Delete_patch(int Total_PatchCount,char *patch_file,int type)
 				fprintf(stdout,"Found For Deletion\n");
 				Found=1;
 			}
-			else strcpy(patch[PatchCount++],line);
+			else 
+			{
+				sizeofBuffer = sizeof(patch[PatchCount++]);
+				if( strlen(line) > sizeofBuffer )
+				{
+					fprintf(stderr,"Invalid: patch[%d] Length More than %d bytes \n",PatchCount++,sizeofBuffer);
+					continue;
+				}
+
+				strcpy(patch[PatchCount++],line);
+
+			}
 		}
 	}
 	free(line);

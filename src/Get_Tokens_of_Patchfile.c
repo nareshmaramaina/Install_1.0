@@ -24,9 +24,22 @@ int Get_Tokens_of_FirmwarePatchfile(char *file,char *FirmwareName,float *Version
 		for( i=0; ( ( ptr = strtok(NULL, "/") ) != NULL );i++)
 		{
 			if( i == 3)
+			{
+                                if( strlen(ptr) > 128 )
+                                {
+                                        fprintf(stderr,"Invalid: FirmwareName Length More than 128 bytes \n");
+                                        continue;
+                                }
+
 				strcpy(FirmwareName,ptr);
+			}
 			else if ( i == 4 )
 			{
+                                if( strlen(ptr) > 24 )
+                                {
+                                        fprintf(stderr,"Invalid: FirmwareVersion Length More than 24 bytes \n");
+                                        continue;
+                                }
 				strcpy(VersionBuff,ptr);
 				break;	
 			}
@@ -84,11 +97,32 @@ int Get_Tokens_of_ApplicationPatchfile(char *file,char *ApplicationType,char *Ap
 		for( i=0; ( ( ptr = strtok(NULL, "/") ) != NULL );i++)
 		{
 			if( i == 3)
+			{
+                                if( strlen(ptr) > 128 )
+                                {
+                                        fprintf(stderr,"Invalid: ApplicationType Length More than 128 bytes \n");
+                                        continue;
+                                }
+
 				strcpy(ApplicationType,ptr);
+			}
 			else if ( i == 4 )
+			{
+                                if( strlen(ptr) > 128 )
+                                {
+                                        fprintf(stderr,"Invalid: ApplicationName Length More than 128 bytes \n");
+                                        continue;
+                                }
+
 				strcpy(ApplicationName,ptr);
+			}
 			else if ( i == 5 )
 			{
+				if( strlen(ptr) > 24 )
+                                {
+                                        fprintf(stderr,"Invalid: Applciation Version Length More than 24 bytes \n");
+                                        continue;
+                                }
 				strcpy(VersionBuff,ptr);
 				break;	
 			}

@@ -59,6 +59,13 @@ int Get_PatchFileName_for_installation(char *PatchFileName,int type,int Patch_Nu
 
 			if ( line[strlen(line)-1] == '\n' )
 				line[strlen(line)-1] = '\0';
+			
+			if( strlen(line) > 340 )
+			{
+				fprintf(stderr,"Invalid: PatchFileName Length More than 340 bytes \n");
+				continue;
+			}
+
 
 			strcpy(PatchFileName,line);
 			Found=1;
