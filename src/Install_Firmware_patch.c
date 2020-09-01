@@ -34,11 +34,6 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	sprintf(RemoveExtractPath,"rm -rf %s",ExtractPath);	
 
 
-
-	system("/vision/lcd_bkl &");
-
-	system("cat /vision/apply_patch > /dev/fb0");
-
 	if( access(ExtractPath,F_OK) == 0 )
 		system (RemoveExtractPath); // Removing previous files  
 
@@ -110,6 +105,11 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	}
 	else
 		fprintf(stdout,"Non Critical Mode Enabled\n");
+
+	system("/vision/DeviceManagement/lcd_bkl &");
+	system("cat /vision/DeviceManagement/logos/InstallingFirmware.png > /dev/fb0");
+
+	sleep(1);
 
 	memset(cmd,0,sizeof(cmd));
 	sprintf(cmd,"chmod -R 777  %s/*",FirmwarePath);

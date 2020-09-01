@@ -119,6 +119,8 @@ int Install_Application_patch(char *ApplicationPatchFile)
 	else
 		fprintf(stdout,"Non Critical Mode Enabled\n");
 
+	system("/vision/DeviceManagement/lcd_bkl &");
+	system("cat /vision/DeviceManagement/logos/InstallingApplication.png > /dev/fb0");
 
 	memset(cmd,0,sizeof(cmd));
 	sprintf(cmd,"chmod -R 777  %s/*",ApplicationPath);
