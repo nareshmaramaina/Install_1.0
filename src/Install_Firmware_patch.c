@@ -109,7 +109,6 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	system("/vision/DeviceManagement/lcd_bkl &");
 	system("cat /vision/DeviceManagement/logos/InstallingFirmware.png > /dev/fb0");
 
-	sleep(1);
 
 	memset(cmd,0,sizeof(cmd));
 	sprintf(cmd,"chmod -R 777  %s/*",FirmwarePath);
@@ -170,6 +169,9 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 
 	Update_Firmware_patch_info_File(FirmwareName,Version,md5sum);
 	system (RemoveExtractPath); // Removing previous files  
+	
+	sleep(2);
+	
 	return 0;
 
 }

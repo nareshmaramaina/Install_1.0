@@ -166,5 +166,6 @@ int Install_Application_patch(char *ApplicationPatchFile)
 	}
 	Update_Application_patch_info_File(Patch_info_file,ApplicationType,ApplicationName,Version,md5sum);
 	system (RemoveExtractPath); // Removing previous files  
+	sleep(2);
 	return 0;
 }
