@@ -20,13 +20,17 @@ int main()
 	int Success_Installation=0;
 	int Apps_Downloads,Firmware_Downloads;
 	int ret;
+	int Installer_Current_Version=2;
 	ret = Install_patches_lock();
-
+	
 	if(ret < 0)    /* Case is Not To run Twice*/
 	{
 		fprintf(stderr,"Install_patches_lock Application is already Running\n");
 		return -1;
 	}
+	
+	Write_Current_Version(Installer_Current_Version);
+
 	Firmware_Downloads = Get_Total_Downloaded_Updates(FIRMWARE);
 	if ( Firmware_Downloads > 0 )
 	{

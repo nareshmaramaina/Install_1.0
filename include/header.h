@@ -57,4 +57,4 @@ void Update_Firmware_patch_info_File(char *FirmwareName,float Version,char *md5s
 void Update_Application_patch_info_File(char *app_patch_info_file,char *ApplicationType,char *ApplicationName,float Version,char *md5sum);
 void get_md5sum(char *file,char  *md5sum);
 void Update_Current_Date_with_Time(char *Date_time);
-
+void Write_Current_Version(int Version);
