@@ -1,6 +1,7 @@
 #include<header.h>
 int Update_BootImages(char *BootImagesPath)
 {
+	FILE *fp= NULL;
 	int Ubootmd5_ret,Kernelmd5_ret,Kernel_ret,Uboot_ret;
 	char file[360];
 	char cmd[460];
@@ -33,7 +34,15 @@ int Update_BootImages(char *BootImagesPath)
 			system("echo 8 > /sys/devices/platform/sdhci-esdhc-imx.1/mmc_host/mmc1/mmc1:0001/boot_config");
 
 			if ( Uboot_ret == 0 )
+			{
+				mkdir_p("/vision/");
+				system("fw_printenv > /vision/env_file.txt");
+				fp = fopen("/vision/.RHMS_Uboot_Update","w");
+				if ( fp == NULL )
+					return -1;
+				fclose(fp);	
 				fprintf(stdout,"U-Boot Loaded Successfully\n");
+			}
 			else 
 			{
 				fprintf(stdout,"Caution: U-boot Load Failed, Your POS may be crashed \n");
@@ -86,3 +95,18 @@ int Update_BootImages(char *BootImagesPath)
 
 	return 0;
 }
+int mkdir_p(char *dirname)
+{
+        DIR *dp;
+
+        dp = opendir(dirname);
+        if ( dp == NULL )
+        {
+                remove(dirname);
+                return mkdir(dirname,0777);
+        }
+
+        closedir(dp);
+        return 0;
+}
+

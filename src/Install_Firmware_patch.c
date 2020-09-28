@@ -3,19 +3,21 @@ char *Standard_Firmwares_path="/mnt/sysuser/Software-Upgrade/Firmware_Downloads/
 char *Firmware_history_file="/etc/vision/RHMS/Firmware/Installed_Firmware_patches_history";
 int Install_Firmware_patch(char *FirmwarePatchFile)
 {
-	char file[360];
-	char cmd[400];
+	char file[460];
+	char cmd[500];
 	char md5sum[64];
 	int ret =0;
-	char ExtractPath[330];
-	char FirmwarePath[340];
-	char RemoveExtractPath[340];
+	char ExtractPath[430];
+	char FirmwarePath[440];
+	char RemoveExtractPath[440];
 	char FirmwareName[128];
 	float Version;
+	char ProjectName[128];
 	DIR *dp=NULL;
 
+	memset(ProjectName,0,sizeof(ProjectName));
 	memset(FirmwareName,0,sizeof(FirmwareName));
-	ret = Get_Tokens_of_FirmwarePatchfile(FirmwarePatchFile,FirmwareName,&Version);
+	ret = Get_Tokens_of_FirmwarePatchfile(FirmwarePatchFile,FirmwareName,&Version,ProjectName);
 
 	printf(" FirmwareName = %s  Version= %.1f\n" ,FirmwareName,Version);
 	if( ret  != 0 )
@@ -30,7 +32,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	fprintf(stdout,"Firmware Installing ...\n");
 	memset(ExtractPath,0,sizeof(ExtractPath));
 
-	sprintf(ExtractPath,"%s/%s/Extract",Standard_Firmwares_path,FirmwareName);
+	sprintf(ExtractPath,"%s/%s/%s/Extract",Standard_Firmwares_path,ProjectName,FirmwareName);
 	sprintf(RemoveExtractPath,"rm -rf %s",ExtractPath);	
 
 
@@ -41,7 +43,10 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	sprintf(cmd,"mkdir -p %s",ExtractPath);
 	system(cmd); // Extract Patch in Particular Folder 
 
-	system("mkdir -p /etc/vision/RHMS/Firmware/");
+	memset(cmd,0,sizeof(cmd));
+        sprintf(cmd,"mkdir -p /etc/vision/RHMS/Firmware/%s/%s",ProjectName,FirmwareName);
+        system(cmd); 
+
 
 	sprintf(cmd,"unzip %s -d %s  >> %s",FirmwarePatchFile,ExtractPath,Firmware_history_file);
 
@@ -136,9 +141,6 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		closedir(dp);
 		fprintf(stdout,"%s Boot Directory found, Searching for Boot Images\n",file);
 		Update_BootImages(file);
-		memset(cmd,0,sizeof(cmd));
-		sprintf(cmd,"rm -rf %s",file);
-		system(cmd);
 	}
 
 
@@ -167,7 +169,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		sync();
 	}
 
-	Update_Firmware_patch_info_File(FirmwareName,Version,md5sum);
+	Update_Firmware_patch_info_File(FirmwareName,Version,md5sum,ProjectName);
 	system (RemoveExtractPath); // Removing previous files  
 	
 	sleep(2);

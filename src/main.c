@@ -20,7 +20,7 @@ int main()
 	int Success_Installation=0;
 	int Apps_Downloads,Firmware_Downloads;
 	int ret;
-	int Installer_Current_Version=2;
+	int Installer_Current_Version=3;
 	ret = Install_patches_lock();
 	
 	if(ret < 0)    /* Case is Not To run Twice*/
@@ -30,6 +30,13 @@ int main()
 	}
 	
 	Write_Current_Version(Installer_Current_Version);
+	
+	if ( access("/vision/.RHMS_Uboot_Update",F_OK) == 0 )
+	{
+	fprintf(stdout,"Updating Last U-boot Environment Variables to Current Running U-boot\n");
+	system("/vision/DeviceManagement/set_env > /dev/null 2>&1");
+	remove("/vision/.RHMS_Uboot_Update");
+	}
 
 	Firmware_Downloads = Get_Total_Downloaded_Updates(FIRMWARE);
 	if ( Firmware_Downloads > 0 )

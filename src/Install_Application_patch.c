@@ -3,23 +3,24 @@ char *Standard_Apps_path="/mnt/sysuser/Software-Upgrade/Applications_Downloads/"
 char *Application_history_file="/etc/vision/RHMS/Apps/Installed_Apps_patches_history";
 int Install_Application_patch(char *ApplicationPatchFile)
 {
-	char Patch_info_file[460];
 	char md5sum[64];
-	char file[460];
-	char cmd[500];
+	char file[560];
+	char cmd[1600];
 	int ret =0;
-	char ExtractPath[430];
-	char ApplicationPath[440];
-	char RemoveExtractPath[440];
+	char ExtractPath[530];
+	char ApplicationPath[540];
+	char RemoveExtractPath[540];
 	DIR *dp=NULL;
 	char ApplicationType[128];
 	char ApplicationName[128];
 	float Version;
+	char ProjectName[128];
 	memset(ApplicationType,0,sizeof(ApplicationType));
 	memset(ApplicationName,0,sizeof(ApplicationName));
+	memset(ProjectName,0,sizeof(ProjectName));
 
-	ret = Get_Tokens_of_ApplicationPatchfile(ApplicationPatchFile,ApplicationType,ApplicationName,&Version);
-	printf(" ApplicationType = %s ApplicationName = %s Version= %.1f\n" ,ApplicationType,ApplicationName,Version);
+	ret = Get_Tokens_of_ApplicationPatchfile(ApplicationPatchFile,ApplicationType,ApplicationName,&Version,ProjectName);
+	printf(" ApplicationType = %s ApplicationName = %s Version= %.1f ProjectName = %s\n" ,ApplicationType,ApplicationName,Version,ProjectName);
 
 	if( ret  != 0 )
 		return -1;
@@ -27,7 +28,7 @@ int Install_Application_patch(char *ApplicationPatchFile)
 	fprintf(stdout,"Application Installing ...\n");
 	memset(ExtractPath,0,sizeof(ExtractPath));
 
-	sprintf(ExtractPath,"%s/%s/%s/Extract",Standard_Apps_path,ApplicationType,ApplicationName);
+	sprintf(ExtractPath,"%s/%s/%s/%s/Extract",Standard_Apps_path,ProjectName,ApplicationType,ApplicationName);
 	sprintf(RemoveExtractPath,"rm -rf %s",ExtractPath);	
 
 	if ( access(ApplicationPatchFile,F_OK) != 0 )
@@ -46,12 +47,8 @@ int Install_Application_patch(char *ApplicationPatchFile)
 	system(cmd); // Extract Patch in Particular Folder 
 
 	memset(cmd,0,sizeof(cmd));
-	sprintf(cmd,"mkdir -p /etc/vision/RHMS/Apps/%s/%s",ApplicationType,ApplicationName);
-	system(cmd); // Extract Patch in Particular Folder 
-
-	memset(Patch_info_file,0,sizeof(Patch_info_file));
-
-	sprintf(Patch_info_file,"/etc/vision/RHMS/Apps/%s/%s/AppUpdated.info",ApplicationType,ApplicationName);
+	sprintf(cmd,"mkdir -p /etc/vision/RHMS/Apps/%s/%s/%s/",ProjectName,ApplicationType,ApplicationName);
+	system(cmd); 
 
 
 	memset(cmd,0,sizeof(cmd));
@@ -164,7 +161,7 @@ int Install_Application_patch(char *ApplicationPatchFile)
 		fprintf(stdout, "Finished run %s script for run commands After Installed Application patch,return value of script = %d\n",file,ret );
 		sync();
 	}
-	Update_Application_patch_info_File(Patch_info_file,ApplicationType,ApplicationName,Version,md5sum);
+	Update_Application_patch_info_File(ApplicationType,ApplicationName,Version,md5sum,ProjectName);
 	system (RemoveExtractPath); // Removing previous files  
 	sleep(2);
 	return 0;
