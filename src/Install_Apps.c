@@ -6,6 +6,8 @@ int  Install_Apps(int Total_Installations)
 
 	char ApplicationPatchFile[340];
 
+	system("/vision/DeviceManagement/lcd_bkl &");
+
 	for( PatchCount = 1,Deleted = 0,Installed=0; PatchCount <= Total_Installations; PatchCount++)
 	{	
 		memset(ApplicationPatchFile,0,sizeof(ApplicationPatchFile));
@@ -25,10 +27,14 @@ int  Install_Apps(int Total_Installations)
 				if ( ret == 0 )	
 				{
 					Installed++;
-					fprintf(stdout,"Patch Applied Failed, Due to Battery must and Should Require for patch installation\n");
+					fprintf(stdout,"Application Installed Successfully, Installed Count  = %d\n",Installed);
 				}
-				else fprintf(stdout,"Failed To Apply Application Patch No=%d, App = %s\n",PatchCount,ApplicationPatchFile); 
-
+				else 
+				{
+					fprintf(stdout,"Failed To Apply Application Patch No=%d, App = %s\n",PatchCount,ApplicationPatchFile); 
+					system("cat /vision/DeviceManagement/logos/AppInstallationFailed.png > /dev/fb0");
+					sleep(1);
+				}
 				Delete_From_installation(ApplicationPatchFile,APPLICATION);
 				Deleted++;
 			}

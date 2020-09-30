@@ -22,6 +22,8 @@ int Update_BootImages(char *BootImagesPath)
 				fprintf(stderr,"Uboot File Corrupted\n");
 				return -1;
 			}
+			mkdir_p("/vision/");
+			system("fw_printenv > /vision/env_file.txt");
 			fprintf(stdout,"Installing...  GL11 iMX6  U-boot Image\n");
 			system("echo 8 > /sys/devices/platform/sdhci-esdhc-imx.1/mmc_host/mmc1/mmc1:0001/boot_config");
 			system("dd if=/dev/zero of=/dev/mmcblk0 bs=512 seek=1536 count=8");
@@ -35,8 +37,6 @@ int Update_BootImages(char *BootImagesPath)
 
 			if ( Uboot_ret == 0 )
 			{
-				mkdir_p("/vision/");
-				system("fw_printenv > /vision/env_file.txt");
 				fp = fopen("/vision/.RHMS_Uboot_Update","w");
 				if ( fp == NULL )
 					return -1;
@@ -97,16 +97,16 @@ int Update_BootImages(char *BootImagesPath)
 }
 int mkdir_p(char *dirname)
 {
-        DIR *dp;
+	DIR *dp;
 
-        dp = opendir(dirname);
-        if ( dp == NULL )
-        {
-                remove(dirname);
-                return mkdir(dirname,0777);
-        }
+	dp = opendir(dirname);
+	if ( dp == NULL )
+	{
+		remove(dirname);
+		return mkdir(dirname,0777);
+	}
 
-        closedir(dp);
-        return 0;
+	closedir(dp);
+	return 0;
 }
 

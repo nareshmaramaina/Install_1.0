@@ -37,7 +37,6 @@ int Check_Battery_and_Minumum_Charge(void)
 		printf("\nBattery Present\n");
 		if(BattVt<870)
 		{
-			system("/vision/DeviceManagement/lcd_bkl &");
 			system("cat /vision/DeviceManagement/logos/LowBattery.png > /dev/fb0");
 
 			sleep(1);
@@ -59,8 +58,8 @@ int Check_Battery_and_Minumum_Charge(void)
 	}
 	else if(BattVt <= 0)
 	{
-		system("/vision/DeviceManagement/lcd_bkl &");
 		system("cat /vision/DeviceManagement/logos/InsertBattery.png > /dev/fb0");
+			sleep(1);
 		printf("\nBattery Not Present\n");
 		return -1;
 	}

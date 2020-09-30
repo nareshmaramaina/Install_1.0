@@ -51,6 +51,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	sprintf(cmd,"unzip %s -d %s  >> %s",FirmwarePatchFile,ExtractPath,Firmware_history_file);
 
 	printf("Extracting %s\n",cmd);  
+	system("cat /vision/DeviceManagement/logos/InstallingFirmware.png > /dev/fb0");
 
 	ret = system(cmd); // Unzipping 
 	
@@ -60,6 +61,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 		fprintf(stderr,"Unzip failed %s\n",FirmwarePatchFile);	
 		return -1;
 	}
+	sleep(1);
 	chdir(ExtractPath);// Changing directory to firmware
 	ret = system("md5sum -c patch.md5"); // Md5sum verification
 
@@ -111,8 +113,6 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	else
 		fprintf(stdout,"Non Critical Mode Enabled\n");
 
-	system("/vision/DeviceManagement/lcd_bkl &");
-	system("cat /vision/DeviceManagement/logos/InstallingFirmware.png > /dev/fb0");
 
 
 	memset(cmd,0,sizeof(cmd));
@@ -171,8 +171,6 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 
 	Update_Firmware_patch_info_File(FirmwareName,Version,md5sum,ProjectName);
 	system (RemoveExtractPath); // Removing previous files  
-	
-	sleep(2);
 	
 	return 0;
 

@@ -56,6 +56,7 @@ int Install_Application_patch(char *ApplicationPatchFile)
 	sprintf(cmd,"unzip %s -d %s  >> %s",ApplicationPatchFile,ExtractPath,Application_history_file);
 
 	printf("Extracting %s\n",cmd);  
+	system("cat /vision/DeviceManagement/logos/InstallingApplication.png > /dev/fb0");
 
 	ret = system(cmd); // Unzipping 
 
@@ -64,6 +65,7 @@ int Install_Application_patch(char *ApplicationPatchFile)
 		fprintf(stderr,"Unzip failed %s\n",ApplicationPatchFile);	
 		return -1;
 	}
+	sleep(1);
 	chdir(ExtractPath);// Changing directory to firmware
 	ret = system("md5sum -c app.md5"); // Md5sum verification
 
@@ -116,9 +118,6 @@ int Install_Application_patch(char *ApplicationPatchFile)
 	else
 		fprintf(stdout,"Non Critical Mode Enabled\n");
 
-	system("/vision/DeviceManagement/lcd_bkl &");
-	system("cat /vision/DeviceManagement/logos/InstallingApplication.png > /dev/fb0");
-
 	memset(cmd,0,sizeof(cmd));
 	sprintf(cmd,"chmod -R 777  %s/*",ApplicationPath);
 	ret = system(cmd);
@@ -163,6 +162,5 @@ int Install_Application_patch(char *ApplicationPatchFile)
 	}
 	Update_Application_patch_info_File(ApplicationType,ApplicationName,Version,md5sum,ProjectName);
 	system (RemoveExtractPath); // Removing previous files  
-	sleep(2);
 	return 0;
 }

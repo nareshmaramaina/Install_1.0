@@ -20,22 +20,22 @@ int main()
 	int Success_Installation=0;
 	int Apps_Downloads,Firmware_Downloads;
 	int ret;
-	int Installer_Current_Version=3;
+	int Installer_Current_Version=4;
 	ret = Install_patches_lock();
-	
+
 	if(ret < 0)    /* Case is Not To run Twice*/
 	{
 		fprintf(stderr,"Install_patches_lock Application is already Running\n");
 		return -1;
 	}
-	
+
 	Write_Current_Version(Installer_Current_Version);
-	
+
 	if ( access("/vision/.RHMS_Uboot_Update",F_OK) == 0 )
 	{
-	fprintf(stdout,"Updating Last U-boot Environment Variables to Current Running U-boot\n");
-	system("/vision/DeviceManagement/set_env > /dev/null 2>&1");
-	remove("/vision/.RHMS_Uboot_Update");
+		fprintf(stdout,"Updating Last U-boot Environment Variables to Updated U-boot\n");
+		system("/vision/DeviceManagement/set_env > /dev/null 2>&1");
+		remove("/vision/.RHMS_Uboot_Update");
 	}
 
 	Firmware_Downloads = Get_Total_Downloaded_Updates(FIRMWARE);
@@ -50,7 +50,14 @@ int main()
 			fprintf(stdout,"Successfully Installed Firmware Patch, reboot required for the patch changes\n");
 			Success_Installation=1;
 		}
-		else fprintf(stdout,"Firmware Installation Failed\n");
+		else
+		{
+			fprintf(stdout,"Firmware Installation Failed\n");
+			system("cat /vision/DeviceManagement/logos/FirmwareInstallationFailed.png > /dev/fb0");
+			sleep(2);
+
+		}
+		system("killall  /vision/DeviceManagement/lcd_bkl");
 	}
 	else 
 		fprintf(stdout,"No Firmware Installations Found\n");
@@ -65,6 +72,7 @@ int main()
 			fprintf(stdout,"Successfully Installed %d Applications, reboot required for the patch changes\n",ret);
 			Success_Installation =1;
 		}
+		system("killall  /vision/DeviceManagement/lcd_bkl");
 	}
 	else 
 		fprintf(stdout,"No Application Installations Found\n");
@@ -79,6 +87,7 @@ int main()
 	{
 		fprintf(stdout,"Rebooting the POS device  for the patch installation changes\n");
 		system("reboot");
+		sleep(12); // Avoid startx running
 	}
 
 	return 0;

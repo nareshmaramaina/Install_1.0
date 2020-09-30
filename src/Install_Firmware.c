@@ -7,6 +7,7 @@ int  Install_Firmware()
 	char FirmwarePatchFile[340];
 
 	memset(FirmwarePatchFile,0,sizeof(FirmwarePatchFile));
+	system("/vision/DeviceManagement/lcd_bkl &");
 
 	ret = Get_PatchFileName_for_installation(FirmwarePatchFile,FIRMWARE,0);
 
