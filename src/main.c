@@ -20,7 +20,7 @@ int main()
 	int Success_Installation=0;
 	int Apps_Downloads,Firmware_Downloads;
 	int ret;
-	int Installer_Current_Version=4;
+	int Installer_Current_Version=5;
 	ret = Install_patches_lock();
 
 	if(ret < 0)    /* Case is Not To run Twice*/
@@ -42,6 +42,7 @@ int main()
 	if ( Firmware_Downloads > 0 )
 	{
 		fprintf(stdout,"%d Firmware Installations are need to Install \n",Firmware_Downloads);
+		system("/vision/DeviceManagement/lcd_bkl &");
 		ret = Install_Firmware();	
 		if ( ret == 1 )
 			fprintf(stdout,"Firmware Installation Failed due to  Battery must and Should Require for patch installation\n");
@@ -66,6 +67,7 @@ int main()
 	if ( Apps_Downloads > 0 )
 	{
 		fprintf(stdout,"%d Application Installations are need to Install \n",Apps_Downloads);
+		system("/vision/DeviceManagement/lcd_bkl &");
 		ret = Install_Apps();	
 		if ( ret > 0 )
 		{

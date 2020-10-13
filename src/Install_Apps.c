@@ -6,7 +6,6 @@ int  Install_Apps(int Total_Installations)
 
 	char ApplicationPatchFile[340];
 
-	system("/vision/DeviceManagement/lcd_bkl &");
 
 	for( PatchCount = 1,Deleted = 0,Installed=0; PatchCount <= Total_Installations; PatchCount++)
 	{	
