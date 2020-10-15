@@ -25,7 +25,7 @@ int main()
 
 	if(ret < 0)    /* Case is Not To run Twice*/
 	{
-		fprintf(stderr,"Install_patches_lock Application is already Running\n");
+		fprintf(stderr,"Installer_FirmwareAndApps Application is already Running\n");
 		return -1;
 	}
 
@@ -68,7 +68,7 @@ int main()
 	{
 		fprintf(stdout,"%d Application Installations are need to Install \n",Apps_Downloads);
 		system("/vision/DeviceManagement/lcd_bkl &");
-		ret = Install_Apps();	
+		ret = Install_Apps(Apps_Downloads);	
 		if ( ret > 0 )
 		{
 			fprintf(stdout,"Successfully Installed %d Applications, reboot required for the patch changes\n",ret);
@@ -92,6 +92,6 @@ int main()
 		sleep(12); // Avoid startx running
 	}
 
-	return 0;
+	return ret;
 }
 

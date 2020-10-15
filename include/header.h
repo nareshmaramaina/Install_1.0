@@ -43,7 +43,7 @@ int Check_Battery_and_Minumum_Charge(void);
 int Install_Application_patch(char *ApplicationPatchFile);
 int Install_Firmware_patch(char *FirmwarePatchFile);
 int  Install_Firmware();
-int  Install_Apps();
+int  Install_Apps(int);
 int Delete_From_installation(char *patch_file,int type);
 int Get_Tokens_of_FirmwarePatchfile(char *file,char *FirmwareName,float *Version,char *);
 int Get_Tokens_of_ApplicationPatchfile(char *file,char *ApplicationType,char *ApplicationName,float *Version,char *);
