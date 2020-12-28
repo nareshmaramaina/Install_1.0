@@ -44,8 +44,8 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	system(cmd); // Extract Patch in Particular Folder 
 
 	memset(cmd,0,sizeof(cmd));
-        sprintf(cmd,"mkdir -p /etc/vision/RHMS/Firmware/%s/%s",ProjectName,FirmwareName);
-        system(cmd); 
+	sprintf(cmd,"mkdir -p /etc/vision/RHMS/Firmware/%s/%s",ProjectName,FirmwareName);
+	system(cmd); 
 
 
 	sprintf(cmd,"unzip %s -d %s  >> %s",FirmwarePatchFile,ExtractPath,Firmware_history_file);
@@ -54,7 +54,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	system("cat /vision/DeviceManagement/logos/InstallingFirmware.png > /dev/fb0");
 
 	ret = system(cmd); // Unzipping 
-	
+
 	if(ret != 0)
 	{
 		system (RemoveExtractPath); // Removing previous files  
@@ -140,7 +140,31 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 	{
 		closedir(dp);
 		fprintf(stdout,"%s Boot Directory found, Searching for Boot Images\n",file);
-		Update_BootImages(file);
+
+		ret  = system("grep Hardware /proc/cpuinfo  |grep MX25 -q");
+		if ( ret == 0 )
+		{
+			fprintf(stdout,"This is Imx25 device\n");
+			if ( Update_imx25_BootImages(file) == 0 )
+				fprintf(stdout,"Boot Image Patch Applied Successfully\n");
+			else 
+			{
+				fprintf(stdout,"Update_imx25_BootImages updation Failed\n");
+				return -1;
+			}
+		}
+
+		else 
+		{
+			fprintf(stdout,"This is Imx6 device\n");
+			if ( 	Update_BootImages(file) == 0 )
+				fprintf(stdout," Boot Image Patch Applied Successfully\n");
+			else 
+			{
+				fprintf(stdout," Update_BootImages updation Failed\n");
+				return -1;
+			}
+		}
 	}
 
 
@@ -171,7 +195,7 @@ int Install_Firmware_patch(char *FirmwarePatchFile)
 
 	Update_Firmware_patch_info_File(FirmwareName,Version,md5sum,ProjectName);
 	system (RemoveExtractPath); // Removing previous files  
-	
+
 	return 0;
 
 }

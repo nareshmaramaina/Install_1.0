@@ -20,7 +20,7 @@ int main()
 	int Success_Installation=0;
 	int Apps_Downloads,Firmware_Downloads;
 	int ret;
-	int Installer_Current_Version=5;
+	int Installer_Current_Version=7;
 	ret = Install_patches_lock();
 
 	if(ret < 0)    /* Case is Not To run Twice*/
@@ -39,6 +39,20 @@ int main()
 	}
 
 	Firmware_Downloads = Get_Total_Downloaded_Updates(FIRMWARE);
+	Apps_Downloads = Get_Total_Downloaded_Updates(APPLICATION);
+	
+	if ( Firmware_Downloads > 0 || Apps_Downloads > 0 ) 
+	{
+		ret  = system("grep Hardware /proc/cpuinfo  |grep MX25 -q");
+		if ( ret == 0 )
+		{
+			fprintf(stdout,"This is Imx25 device, So inserting iocontrol module on 235 number\n");
+			system("insmod /home/imx_iocontrol.ko");
+			system("mknod /dev/ioc c 235 0");
+			sleep(2);
+		}
+
+	}
 	if ( Firmware_Downloads > 0 )
 	{
 		fprintf(stdout,"%d Firmware Installations are need to Install \n",Firmware_Downloads);
@@ -63,7 +77,7 @@ int main()
 	else 
 		fprintf(stdout,"No Firmware Installations Found\n");
 
-	Apps_Downloads = Get_Total_Downloaded_Updates(APPLICATION);
+	//Apps_Downloads = Get_Total_Downloaded_Updates(APPLICATION);
 	if ( Apps_Downloads > 0 )
 	{
 		fprintf(stdout,"%d Application Installations are need to Install \n",Apps_Downloads);

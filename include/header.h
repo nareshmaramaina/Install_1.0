@@ -59,3 +59,4 @@ void get_md5sum(char *file,char  *md5sum);
 void Update_Current_Date_with_Time(char *Date_time);
 void Write_Current_Version(int Version);
 int mkdir_p(char *dirname);
+int Update_imx25_BootImages(char *BootImagesPath);

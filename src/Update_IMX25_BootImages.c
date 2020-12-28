@@ -1,5 +1,5 @@
 #include<header.h>
-int Update_BootImages(char *BootImagesPath)
+int Update_imx25_BootImages(char *BootImagesPath)
 {
 	FILE *fp= NULL;
 	int Ubootmd5_ret,Kernelmd5_ret,Kernel_ret,Uboot_ret;
@@ -7,7 +7,7 @@ int Update_BootImages(char *BootImagesPath)
 	char cmd[460];
 	chdir(BootImagesPath);
 	memset(file,0,sizeof(file));
-	sprintf(file,"%s/u-boot.bin",BootImagesPath);
+	sprintf(file,"%s/imx25_u-boot.bin",BootImagesPath);
 	Uboot_ret = access(file,F_OK);
 	if ( Uboot_ret == 0 )
 	{
@@ -23,9 +23,10 @@ int Update_BootImages(char *BootImagesPath)
 				return -1;
 			}
 			mkdir_p("/vision/");
+					
 			system("fw_printenv > /vision/env_file.txt");
-			fprintf(stdout,"Installing...  GL11 iMX6  U-boot Image\n");
-			system("echo 8 > /sys/devices/platform/sdhci-esdhc-imx.1/mmc_host/mmc1/mmc1:0001/boot_config");
+			fprintf(stdout,"Installing...  GL11 iMX25  U-boot Image\n");
+		/*	system("echo 8 > /sys/devices/platform/sdhci-esdhc-imx.1/mmc_host/mmc1/mmc1:0001/boot_config");
 			system("dd if=/dev/zero of=/dev/mmcblk0 bs=512 seek=1536 count=8");
 			system("echo 0 > /sys/block/mmcblk0boot0/force_ro");
 			memset(cmd,0,sizeof(cmd));
@@ -33,7 +34,29 @@ int Update_BootImages(char *BootImagesPath)
 			fprintf(stdout,"Running Uboot Command %s\n",cmd);
 			Uboot_ret = system(cmd);
 			system("echo 1 > /sys/block/mmcblk0boot0/force_ro");
-			system("echo 8 > /sys/devices/platform/sdhci-esdhc-imx.1/mmc_host/mmc1/mmc1:0001/boot_config");
+			system("echo 8 > /sys/devices/platform/sdhci-esdhc-imx.1/mmc_host/mmc1/mmc1:0001/boot_config"); */
+			memset(cmd,0,sizeof(cmd));
+			strcpy(cmd,"flash_eraseall /dev/mtd0");
+			fprintf(stdout,"Installing...  GL11 iMX25  Uboot Image\nErasing... Running Kernel Command %s",cmd);
+			system(cmd);
+			sleep(2);
+			sync();
+			
+
+			memset(cmd,0,sizeof(cmd));
+			sprintf(cmd,"nandwrite -p /dev/mtd0 %s",file);
+			fprintf(stdout,"Writing...  GL11 iMX25  Uboot Image\nRunning Kernel Command %s",cmd);
+			system(cmd);
+			sleep(2);
+			sync();
+			
+
+			memset(cmd,0,sizeof(cmd));
+			sprintf(cmd,"/home/differ /dev/mtd0 %s",file);
+			fprintf(stdout,"checking...  GL11 iMX25  uboot Image\nRunning Kernel Command %s",cmd);
+			Uboot_ret = system(cmd);
+			sleep(2);
+
 
 			if ( Uboot_ret == 0 )
 			{
@@ -48,18 +71,17 @@ int Update_BootImages(char *BootImagesPath)
 				fprintf(stdout,"Caution: U-boot Load Failed, Your POS may be crashed \n");
 				return -1;	
 			}
-			sleep(2);
 			sync();
 		}
 		else fprintf(stderr,"uboot.md5 file not found\n");
 	}
 	else 
-		fprintf(stdout,"U-boot Image, u-boot.bin file not found\n"); 
+		fprintf(stdout,"U-boot Image, imx25_u-boot.bin file not found\n"); 
 
 
 
 	memset(file,0,sizeof(file));
-	sprintf(file,"%s/kernel.IMG",BootImagesPath);
+	sprintf(file,"%s/imx25_kernel.IMG",BootImagesPath);
 	Kernel_ret = access(file,F_OK);
 	if ( Kernel_ret == 0 )
 	{
@@ -75,11 +97,28 @@ int Update_BootImages(char *BootImagesPath)
 				return -1;
 			}
 			memset(cmd,0,sizeof(cmd));
-			sprintf(cmd,"dd if=%s of=/dev/mmcblk0 bs=1M seek=1 conv=fsync",file);
-			fprintf(stdout,"Installing...  GL11 iMX6  Kernel Image\nRunning Kernel Command %s",cmd);
-			Kernel_ret = system(cmd);
+			strcpy(cmd,"flash_eraseall /dev/mtd1");
+			fprintf(stdout,"Installing...  GL11 iMX25  Kernel Image\nErasing... Running Kernel Command %s",cmd);
+			system(cmd);
 			sleep(2);
 			sync();
+			
+
+			memset(cmd,0,sizeof(cmd));
+			sprintf(cmd,"nandwrite -p /dev/mtd1 %s",file);
+			fprintf(stdout,"Writing...  GL11 iMX25  Kernel Image\nRunning Kernel Command %s",cmd);
+			system(cmd);
+			sleep(2);
+			sync();
+			
+
+			memset(cmd,0,sizeof(cmd));
+			sprintf(cmd,"/home/differ /dev/mtd1 %s",file);
+			fprintf(stdout,"checking...  GL11 iMX25  Kernel Image\nRunning Kernel Command %s",cmd);
+			Kernel_ret = system(cmd);
+			sleep(2);
+
+
 			if ( Kernel_ret == 0 )
 				fprintf(stdout," Kernel Loaded Successfully\n");
 			else
@@ -91,29 +130,13 @@ int Update_BootImages(char *BootImagesPath)
 		else fprintf(stderr,"kernel.md5 file not found\n");
 	}
 	else 
-		fprintf(stdout,"Kernel Image, kernel.IMG file not Found \n");
+		fprintf(stdout,"Kernel Image, imx25_kernel.IMG file not Found \n");
 
 	if ( Uboot_ret == 0 || Kernel_ret == 0 )
 		return 0;
-	else
+	else 
 	{
 		fprintf(stderr," U-boot or Kernel patch file not found\n");
-		return -1;
+			return -1;
 	}
-
 }
-int mkdir_p(char *dirname)
-{
-	DIR *dp;
-
-	dp = opendir(dirname);
-	if ( dp == NULL )
-	{
-		remove(dirname);
-		return mkdir(dirname,0777);
-	}
-
-	closedir(dp);
-	return 0;
-}
-
